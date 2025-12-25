@@ -1,0 +1,102 @@
+{
+  "app": {
+    "title": "הכנה לצו ראשון",
+    "subtitle": "התכונן למבחן הפסיכומטרי של צה\"ל"
+  },
+  "nav": {
+    "home": "בית",
+    "practice": "תרגול",
+    "exam": "מבחן",
+    "progress": "מעקב",
+    "login": "התחבר עם Google",
+    "logout": "התנתק"
+  },
+  "home": {
+    "hero_title": "התכונן לצו ראשון בביטחון",
+    "hero_subtitle": "פלטפורמה מקיפה להכנה למבחן הפסיכומטרי של צה\"ל",
+    "what_is_title": "מהו צו ראשון?",
+    "what_is_text": "צו ראשון הוא המפגש הראשון שלך עם צה\"ל, שבו אתה עובר מבחן פסיכומטרי המשמש לקביעת התאמתך לתפקידים שונים. המבחן כולל ארבעה חלקים עיקריים: אנלוגיה מילולית, אנלוגיה צורנית, הוראות וכיוונים, וחשיבה כמותית.",
+    "practice_title": "תרגול",
+    "practice_desc": "תרגל כל סוג שאלה בנפרד, קבל משוב מיידי והסברים מפורטים",
+    "practice_guest_limit": "אורחים: עד 5 שאלות בכל סוג",
+    "exam_title": "מבחן",
+    "exam_desc": "סימולציה מלאה של מבחן צו ראשון עם זמן מוגבל וציון סופי",
+    "exam_requires_login": "דורש התחברות",
+    "progress_title": "מעקב",
+    "progress_desc": "צפה בהתקדמות שלך, נתח את הביצועים וזהה תחומים לשיפור",
+    "progress_requires_login": "דורש התחברות"
+  },
+  "practice": {
+    "choose_type": "בחר סוג שאלה",
+    "verbal_analogy": "אנלוגיה מילולית",
+    "shape_analogy": "אנלוגיה צורנית",
+    "instructions_directions": "הוראות וכיוונים",
+    "quantitative": "חשיבה כמותית",
+    "question_of": "שאלה {{current}} מתוך {{total}}",
+    "submit_answer": "שלח תשובה",
+    "next_question": "שאלה הבאה",
+    "finish_session": "סיום תרגול",
+    "correct": "נכון!",
+    "incorrect": "לא נכון",
+    "explanation": "הסבר",
+    "limit_reached": "הגעת למגבלת התרגול. התחבר לתרגול ללא הגבלה.",
+    "summary_title": "סיכום תרגול",
+    "summary_accuracy": "דיוק: {{accuracy}}%",
+    "summary_accuracy_short": "דיוק",
+
+    "summary_correct": "תשובות נכונות: {{correct}} מתוך {{total}}",
+    "summary_time": "זמן כולל: {{seconds}} שניות",
+    "summary_time_format": "זמן כולל: {{minutes}} דקות {{seconds}} שניות",
+    "summary_time_seconds_only": "זמן כולל: {{seconds}} שניות",
+    "guest_summary_title": "סיימת את התרגול החינמי!",
+    "guest_summary_subtitle": "כדי להמשיך ולהשתפר, הירשם בחינם וקבל גישה מלאה לכל הכלים",
+    "guest_benefit_unlimited": "תרגול ללא הגבלה בכל סוגי השאלות",
+    "guest_benefit_tracking": "מעקב חכם אחר ההתקדמות שלך",
+    "guest_benefit_exams": "מבחנים מלאים עם תזמון אמיתי",
+    "guest_benefit_progress": "ההישגים שלך יישמרו ותוכל לראות איך אתה משתפר ממבחן למבחן",
+    "guest_cta_register": "הירשם עכשיו - חינם",
+    "back_to_types": "חזרה לבחירת סוג",
+    "auth_summary_title": "כל הכבוד!",
+    "auth_summary_subtitle": "המשך לתרגל באופן קבוע כדי להשתפר ולהגיע למטרה שלך",
+    "auth_cta_continue": "המשך לתרגל",
+    "auth_cta_view_progress": "צפה בהתקדמות"
+  },
+  "exam": {
+    "title": "מבחן צו ראשון",
+    "section": "חלק {{index}} מתוך 4",
+    "time_remaining": "זמן שנותר: {{minutes}}:{{seconds}}",
+    "time_expired": "הזמן תם!",
+    "finish_section": "סיום החלק",
+    "confirm_finish_title": "סיום חלק",
+    "confirm_finish_message": "לא ניתן לחזור לחלק זה לאחר סיום. האם אתה בטוח?",
+    "confirm": "אישור",
+    "cancel": "ביטול",
+    "final_score": "ציון סופי",
+    "score_out_of_90": "{{score}} מתוך 90",
+    "breakdown_title": "פירוט לפי סוג",
+    "view_progress": "צפה במעקב מפורט",
+    "start_exam": "התחל מבחן"
+  },
+  "progress": {
+    "title": "מעקב התקדמות",
+    "overall_stats": "סטטיסטיקה כללית",
+    "total_attempts": "מבחנים שבוצעו",
+    "overall_accuracy": "דיוק כללי",
+    "avg_time": "זמן ממוצע לשאלה",
+    "improvement": "שיפור",
+    "stats_by_type": "סטטיסטיקה לפי סוג",
+    "recent_attempts": "מבחנים אחרונים",
+    "date": "תאריך",
+    "score": "ציון",
+    "accuracy": "דיוק",
+    "view_details": "צפה בפרטים",
+    "no_data": "עדיין אין נתונים. בצע מבחן ראשון כדי לראות את ההתקדמות שלך!"
+  },
+  "common": {
+    "loading": "טוען...",
+    "error": "אירעה שגיאה",
+    "try_again": "נסה שוב",
+    "close": "סגור"
+  }
+}
+

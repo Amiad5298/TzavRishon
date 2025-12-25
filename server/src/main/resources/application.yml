@@ -1,0 +1,71 @@
+spring:
+  application:
+    name: tzav-rishon-server
+  
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+  
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${OAUTH_GOOGLE_CLIENT_ID}
+            client-secret: ${OAUTH_GOOGLE_CLIENT_SECRET}
+            scope:
+              - openid
+              - profile
+              - email
+            redirect-uri: ${OAUTH_GOOGLE_REDIRECT_URI}
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
+
+server:
+  port: 8080
+
+app:
+  frontend-url: ${APP_FRONTEND_URL}
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration: 86400000 # 24 hours in milliseconds
+    cookie-name: tzav_auth
+  guest:
+    practice-limit-per-type: ${APP_GUEST_PRACTICE_LIMIT_PER_TYPE:5}
+    recent-questions-cache-size: 5
+  exam:
+    section-counts: ${APP_SECTION_COUNTS}
+    section-durations: ${APP_SECTION_DURATIONS_SEC}
+  adsense:
+    enabled: ${ADSENSE_ENABLED:false}
+    client: ${ADSENSE_CLIENT:}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+

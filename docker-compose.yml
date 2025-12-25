@@ -1,0 +1,78 @@
+services:
+  # ============================================
+  # LOCAL POSTGRESQL - DISABLED (Using Neon Cloud Database)
+  # ============================================
+  # Uncomment below to use local PostgreSQL for development
+  # db:
+  #   image: postgres:16-alpine
+  #   container_name: tzav-rishon-db
+  #   environment:
+  #     POSTGRES_DB: tzav
+  #     POSTGRES_USER: tzav
+  #     POSTGRES_PASSWORD: tzav
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres-data:/var/lib/postgresql/data
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U tzav"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: tzav-rishon-server
+    # No depends_on needed - using Neon cloud database
+    ports:
+      - "8080:8080"
+    environment:
+      # Neon Cloud Database Connection
+      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      # JWT Authentication
+      JWT_SECRET: ${JWT_SECRET}
+      # Google OAuth
+      OAUTH_GOOGLE_CLIENT_ID: ${OAUTH_GOOGLE_CLIENT_ID}
+      OAUTH_GOOGLE_CLIENT_SECRET: ${OAUTH_GOOGLE_CLIENT_SECRET}
+      OAUTH_GOOGLE_REDIRECT_URI: ${OAUTH_GOOGLE_REDIRECT_URI}
+      # Application Settings
+      APP_FRONTEND_URL: ${APP_FRONTEND_URL}
+      APP_GUEST_PRACTICE_LIMIT_PER_TYPE: ${APP_GUEST_PRACTICE_LIMIT_PER_TYPE}
+      APP_SECTION_COUNTS: ${APP_SECTION_COUNTS}
+      APP_SECTION_DURATIONS_SEC: ${APP_SECTION_DURATIONS_SEC}
+      # AdSense (optional)
+      ADSENSE_ENABLED: ${ADSENSE_ENABLED:-false}
+      ADSENSE_CLIENT: ${ADSENSE_CLIENT:-}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: tzav-rishon-web
+    depends_on:
+      - server
+    ports:
+      - "3000:80"
+    environment:
+      VITE_API_BASE: ${VITE_API_BASE}
+      VITE_ADSENSE_ENABLED: ${VITE_ADSENSE_ENABLED:-false}
+    restart: unless-stopped
+
+# ============================================
+# VOLUMES - DISABLED (Using Neon Cloud Database)
+# ============================================
+# Uncomment below to use local PostgreSQL volumes
+# volumes:
+#   postgres-data:
+
