@@ -43,6 +43,6 @@ public class ExamSection {
   private Integer scoreSection = 0;
 
   @OneToMany(mappedBy = "section", cascade = CascadeType.ALL)
-  private List<ExamAnswer> answers;
+  private List<ExamUserAnswer> answers;
 }
 

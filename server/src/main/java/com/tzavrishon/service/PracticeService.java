@@ -21,7 +21,7 @@ public class PracticeService {
   private final PracticeSessionRepository sessionRepository;
   private final QuestionRepository questionRepository;
   private final QuestionOptionRepository optionRepository;
-  private final PracticeAnswerRepository answerRepository;
+  private final PracticeUserAnswerRepository answerRepository;
   private final RecentQuestionRepository recentQuestionRepository;
   private final GuestIdentityRepository guestIdentityRepository;
   private final UserRepository userRepository;
@@ -31,7 +31,7 @@ public class PracticeService {
       PracticeSessionRepository sessionRepository,
       QuestionRepository questionRepository,
       QuestionOptionRepository optionRepository,
-      PracticeAnswerRepository answerRepository,
+      PracticeUserAnswerRepository answerRepository,
       RecentQuestionRepository recentQuestionRepository,
       GuestIdentityRepository guestIdentityRepository,
       UserRepository userRepository,
@@ -153,7 +153,7 @@ public class PracticeService {
     boolean isCorrect = validateAnswer(question, request);
 
     // Save answer
-    PracticeAnswer answer = new PracticeAnswer();
+    PracticeUserAnswer answer = new PracticeUserAnswer();
     answer.setSession(session);
     answer.setQuestion(question);
     answer.setUserAnswerRaw(request.getTextAnswer());
@@ -188,8 +188,8 @@ public class PracticeService {
     session.setEndedAt(Instant.now());
     sessionRepository.save(session);
 
-    List<PracticeAnswer> answers = answerRepository.findBySessionIdOrderByAnsweredAt(sessionId);
-    long correctCount = answers.stream().filter(PracticeAnswer::getIsCorrect).count();
+    List<PracticeUserAnswer> answers = answerRepository.findBySessionIdOrderByAnsweredAt(sessionId);
+    long correctCount = answers.stream().filter(PracticeUserAnswer::getIsCorrect).count();
     int totalTimeMs = answers.stream().mapToInt(a -> a.getTimeMs() != null ? a.getTimeMs() : 0).sum();
 
     PracticeSummaryResponse response = new PracticeSummaryResponse();

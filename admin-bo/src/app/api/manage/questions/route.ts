@@ -104,13 +104,13 @@ export async function GET(request: NextRequest) {
         GROUP BY question_id
       ) opt ON q.id = opt.question_id
       LEFT JOIN (
-        SELECT question_id, 
+        SELECT question_id,
                COUNT(*) as times_served,
                SUM(CASE WHEN is_correct THEN 1 ELSE 0 END) as times_correct
         FROM (
-          SELECT question_id, is_correct FROM practice_answers
+          SELECT question_id, is_correct FROM practice_user_answers
           UNION ALL
-          SELECT question_id, is_correct FROM exam_answers
+          SELECT question_id, is_correct FROM exam_user_answers
         ) all_answers
         GROUP BY question_id
       ) stats ON q.id = stats.question_id

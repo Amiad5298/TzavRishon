@@ -2,6 +2,7 @@ package com.tzavrishon.controller;
 
 import com.tzavrishon.domain.*;
 import com.tzavrishon.dto.ImportQuestionRequest;
+import com.tzavrishon.dto.OptionData;
 import com.tzavrishon.repository.*;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -13,15 +14,12 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
   private final QuestionRepository questionRepository;
   private final QuestionOptionRepository optionRepository;
-  private final AcceptableAnswerRepository acceptableAnswerRepository;
 
   public AdminController(
       QuestionRepository questionRepository,
-      QuestionOptionRepository optionRepository,
-      AcceptableAnswerRepository acceptableAnswerRepository) {
+      QuestionOptionRepository optionRepository) {
     this.questionRepository = questionRepository;
     this.optionRepository = optionRepository;
-    this.acceptableAnswerRepository = acceptableAnswerRepository;
   }
 
   @PostMapping("/import-questions")
@@ -53,16 +51,6 @@ public class AdminController {
           option.setIsCorrect(optData.getIsCorrect());
           option.setOptionOrder(optData.getOptionOrder());
           optionRepository.save(option);
-        }
-      }
-
-      if (req.getAcceptableAnswers() != null) {
-        for (var ansData : req.getAcceptableAnswers()) {
-          AcceptableAnswer answer = new AcceptableAnswer();
-          answer.setQuestion(question);
-          answer.setValue(ansData.getValue());
-          answer.setNumericTolerance(ansData.getNumericTolerance());
-          acceptableAnswerRepository.save(answer);
         }
       }
 

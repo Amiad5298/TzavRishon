@@ -7,10 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "practice_answers")
+@Table(name = "practice_user_answers")
 @Data
 @NoArgsConstructor
-public class PracticeAnswer {
+public class PracticeUserAnswer {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;

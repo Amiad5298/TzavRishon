@@ -18,10 +18,9 @@ import org.mockito.MockitoAnnotations;
 class ExamServiceTest {
   @Mock private ExamAttemptRepository attemptRepository;
   @Mock private ExamSectionRepository sectionRepository;
-  @Mock private ExamAnswerRepository answerRepository;
+  @Mock private ExamUserAnswerRepository answerRepository;
   @Mock private QuestionRepository questionRepository;
   @Mock private QuestionOptionRepository optionRepository;
-  @Mock private AcceptableAnswerRepository acceptableAnswerRepository;
   @Mock private UserRepository userRepository;
   @Mock private AppProperties appProperties;
 
@@ -44,7 +43,6 @@ class ExamServiceTest {
             answerRepository,
             questionRepository,
             optionRepository,
-            acceptableAnswerRepository,
             userRepository,
             null, // answerNormalizer not needed for this test
             appProperties);
