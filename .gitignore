@@ -81,10 +81,11 @@ Thumbs.db
 # Docker volumes
 postgres-data/
 
-# Database backups (keep schema files)
+# Database backups (keep schema files and migrations)
 *.sql
 !schema.sql
 !init.sql
+!**/db/migration/*.sql
 
 # Build logs
 build.log
