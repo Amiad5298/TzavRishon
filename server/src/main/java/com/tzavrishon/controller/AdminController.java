@@ -30,6 +30,11 @@ public class AdminController {
     int imported = 0;
 
     for (ImportQuestionRequest req : requests) {
+      // Validate options for SINGLE_CHOICE_IMAGE format
+      if (req.getFormat() == QuestionFormat.SINGLE_CHOICE_IMAGE) {
+        validateSingleCorrectAnswer(req.getOptions());
+      }
+
       Question question = new Question();
       question.setType(req.getType());
       question.setFormat(req.getFormat());
@@ -65,6 +70,34 @@ public class AdminController {
     }
 
     return ResponseEntity.ok("Imported " + imported + " questions");
+  }
+
+  /**
+   * Validates that exactly one option is marked as correct for SINGLE_CHOICE_IMAGE questions.
+   *
+   * @param options List of options to validate
+   * @throws IllegalArgumentException if validation fails
+   */
+  private void validateSingleCorrectAnswer(List<OptionData> options) {
+    if (options == null || options.isEmpty()) {
+      throw new IllegalArgumentException(
+          "SINGLE_CHOICE_IMAGE format requires at least one option");
+    }
+
+    long correctCount =
+        options.stream().filter(opt -> Boolean.TRUE.equals(opt.getIsCorrect())).count();
+
+    if (correctCount == 0) {
+      throw new IllegalArgumentException(
+          "SINGLE_CHOICE_IMAGE format requires exactly one correct answer. Found 0 correct answers.");
+    }
+
+    if (correctCount > 1) {
+      throw new IllegalArgumentException(
+          "SINGLE_CHOICE_IMAGE format requires exactly one correct answer. Found "
+              + correctCount
+              + " correct answers.");
+    }
   }
 }
 

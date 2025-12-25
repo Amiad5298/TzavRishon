@@ -9,11 +9,15 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ExamService {
+  private static final Logger logger = LoggerFactory.getLogger(ExamService.class);
+
   private final ExamAttemptRepository attemptRepository;
   private final ExamSectionRepository sectionRepository;
   private final ExamAnswerRepository answerRepository;
@@ -370,6 +374,9 @@ public class ExamService {
     List<QuestionOption> options =
         optionRepository.findByQuestionIdOrderByOptionOrder(question.getId());
     if (!options.isEmpty()) {
+      // Defensive validation: Check for data integrity issues
+      validateQuestionIntegrity(question, options);
+
       response.setOptions(
           options.stream()
               .map(
@@ -385,6 +392,37 @@ public class ExamService {
     }
 
     return response;
+  }
+
+  /**
+   * Defensive validation to detect data integrity issues with question options. Logs warnings if
+   * multiple or zero correct answers are found.
+   *
+   * @param question The question being validated
+   * @param options The list of options for the question
+   */
+  private void validateQuestionIntegrity(Question question, List<QuestionOption> options) {
+    if (question.getFormat() != QuestionFormat.SINGLE_CHOICE_IMAGE) {
+      return; // Only validate SINGLE_CHOICE_IMAGE format
+    }
+
+    long correctCount =
+        options.stream().filter(opt -> Boolean.TRUE.equals(opt.getIsCorrect())).count();
+
+    if (correctCount == 0) {
+      logger.warn(
+          "DATA INTEGRITY ISSUE: Question {} (type: {}) has ZERO correct answers. "
+              + "This will cause all user answers to be marked incorrect.",
+          question.getId(),
+          question.getType());
+    } else if (correctCount > 1) {
+      logger.warn(
+          "DATA INTEGRITY ISSUE: Question {} (type: {}) has {} correct answers. "
+              + "Only one correct answer is allowed. This may cause incorrect scoring.",
+          question.getId(),
+          question.getType(),
+          correctCount);
+    }
   }
 
   private Map<QuestionType, Integer> parseSectionCounts() {
