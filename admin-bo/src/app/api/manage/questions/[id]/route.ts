@@ -106,6 +106,29 @@ export async function PUT(
     const body = await request.json();
     const { type, format, prompt_text, prompt_image_url, explanation, difficulty, is_exam_question, options, acceptable_answers } = body;
 
+    // Validate single correct answer for SINGLE_CHOICE_IMAGE format
+    if (format === 'SINGLE_CHOICE_IMAGE' && options !== undefined) {
+      if (!Array.isArray(options) || options.length === 0) {
+        return NextResponse.json({
+          error: 'SINGLE_CHOICE_IMAGE format requires at least one option'
+        }, { status: 400 });
+      }
+
+      const correctCount = options.filter(opt => opt.is_correct === true).length;
+
+      if (correctCount === 0) {
+        return NextResponse.json({
+          error: 'SINGLE_CHOICE_IMAGE format requires exactly one correct answer. Found 0 correct answers.'
+        }, { status: 400 });
+      }
+
+      if (correctCount > 1) {
+        return NextResponse.json({
+          error: `SINGLE_CHOICE_IMAGE format requires exactly one correct answer. Found ${correctCount} correct answers.`
+        }, { status: 400 });
+      }
+    }
+
     // Update question
     await query(
       `UPDATE questions SET type = $1, format = $2, prompt_text = $3, prompt_image_url = $4,

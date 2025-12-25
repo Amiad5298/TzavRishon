@@ -531,6 +531,37 @@ function CreateQuestionModal({ onClose, onSuccess }: { onClose: () => void; onSu
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
+    // Client-side validation for SINGLE_CHOICE_IMAGE format
+    if (formData.format === 'SINGLE_CHOICE_IMAGE') {
+      const correctCount = options.filter(opt => opt.is_correct).length;
+
+      if (correctCount === 0) {
+        alert('Please select exactly one correct answer. Currently, no answer is marked as correct.');
+        return;
+      }
+
+      if (correctCount > 1) {
+        alert(`Please select exactly one correct answer. Currently, ${correctCount} answers are marked as correct.`);
+        return;
+      }
+
+      // Check that at least one option has text
+      const hasEmptyOptions = options.some(opt => !opt.text.trim());
+      if (hasEmptyOptions) {
+        alert('Please fill in all option texts before submitting.');
+        return;
+      }
+    }
+
+    // Validation for TEXT_INPUT format
+    if (formData.format === 'TEXT_INPUT') {
+      const validAnswers = answers.filter(a => a.trim());
+      if (validAnswers.length === 0) {
+        alert('Please provide at least one acceptable answer.');
+        return;
+      }
+    }
+
     setIsSubmitting(true);
     try {
       const body: Record<string, unknown> = { ...formData };
