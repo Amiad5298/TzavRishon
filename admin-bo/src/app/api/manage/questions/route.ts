@@ -157,6 +157,29 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields: type, format, difficulty' }, { status: 400 });
     }
 
+    // Validate single correct answer for SINGLE_CHOICE_IMAGE format
+    if (format === 'SINGLE_CHOICE_IMAGE') {
+      if (!options || !Array.isArray(options) || options.length === 0) {
+        return NextResponse.json({
+          error: 'SINGLE_CHOICE_IMAGE format requires at least one option'
+        }, { status: 400 });
+      }
+
+      const correctCount = options.filter(opt => opt.is_correct === true).length;
+
+      if (correctCount === 0) {
+        return NextResponse.json({
+          error: 'SINGLE_CHOICE_IMAGE format requires exactly one correct answer. Found 0 correct answers.'
+        }, { status: 400 });
+      }
+
+      if (correctCount > 1) {
+        return NextResponse.json({
+          error: `SINGLE_CHOICE_IMAGE format requires exactly one correct answer. Found ${correctCount} correct answers.`
+        }, { status: 400 });
+      }
+    }
+
     // Insert question
     const questionResult = await query<{ id: string }>(
       `INSERT INTO questions (type, format, prompt_text, prompt_image_url, explanation, difficulty, is_exam_question)
