@@ -57,7 +57,7 @@ const ConfettiParticle: React.FC<{ x: number; y: number; delay: number }> = ({ x
         x: x + (Math.random() - 0.5) * 150,
         y: y + (Math.random() - 0.5) * 150,
       }}
-      transition={{ duration: 1, delay, ease: 'easeOut' }}
+      transition={{ duration: 1, delay, ease: [0.4, 0, 0.2, 1] as any }}
       className="absolute w-2 h-2 rounded-full pointer-events-none"
       style={{ backgroundColor: color }}
     />
@@ -416,7 +416,7 @@ export const AdvancedPracticeScreen: React.FC<Props> = ({
             <motion.div
               initial={{ width: '0%' }}
               animate={{ width: `${(index / total) * 100}%` }}
-              transition={{ duration: prefersReducedMotion ? 0 : 0.6, ease: 'easeOut' }}
+              transition={{ duration: prefersReducedMotion ? 0 : 0.6, ease: [0.4, 0, 0.2, 1] as any }}
               className="h-full bg-gradient-to-r from-primary-500 to-accent-500"
             />
           </div>
@@ -471,7 +471,7 @@ export const AdvancedPracticeScreen: React.FC<Props> = ({
             return (
               <motion.button
                 key={`${question.id}-${choice.id}`}
-                ref={(el) => (choiceRefs.current[index] = el)}
+                ref={(el) => { choiceRefs.current[index] = el; }}
                 role="radio"
                 aria-checked={selectedChoice === choice.id}
                 aria-label={`תשובה ${choice.id}: ${choice.label || ''}`}

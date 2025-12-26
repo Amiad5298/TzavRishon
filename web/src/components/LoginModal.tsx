@@ -116,7 +116,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       y: 0,
       transition: {
         duration: prefersReducedMotion ? 0 : 0.3,
-        ease: 'easeOut',
+        ease: [0.4, 0, 0.2, 1] as any,
       },
     },
     exit: {

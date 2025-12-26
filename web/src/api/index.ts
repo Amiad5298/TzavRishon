@@ -14,7 +14,9 @@ import type {
   ExamAttemptListResponse,
 } from './types';
 
-const API_BASE = (import.meta as any).env.VITE_API_BASE || '/api/v1';
+const API_BASE = (typeof window !== 'undefined' && (import.meta as any).env?.VITE_API_BASE)
+  || (typeof process !== 'undefined' && process.env.NEXT_PUBLIC_API_URL)
+  || '/api/v1';
 
 const api = axios.create({
   baseURL: API_BASE,

@@ -190,7 +190,7 @@ const PracticeTab: React.FC<PracticeTabProps> = ({ dateRange, categoryFilter }) 
                         className={`h-full ${color}`}
                         initial={{ width: 0 }}
                         animate={{ width: `${score}%` }}
-                        transition={{ duration: 1, ease: 'easeOut' }}
+                        transition={{ duration: 1, ease: [0.4, 0, 0.2, 1] as any }}
                       />
                     </div>
                   </div>

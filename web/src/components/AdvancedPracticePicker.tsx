@@ -69,7 +69,7 @@ const ConfettiParticle: React.FC<{ x: number; y: number; delay: number }> = ({ x
         x: x + (Math.random() - 0.5) * 100,
         y: y + (Math.random() - 0.5) * 100,
       }}
-      transition={{ duration: 0.8, delay, ease: 'easeOut' }}
+      transition={{ duration: 0.8, delay, ease: [0.4, 0, 0.2, 1] as any }}
       className="absolute w-2 h-2 rounded-full pointer-events-none"
       style={{ backgroundColor: color }}
     />
@@ -257,7 +257,7 @@ export const AdvancedPracticePicker: React.FC<AdvancedPracticePickerProps> = ({
                 opacity: 0,
                 height: 0,
                 marginBottom: 0,
-                transition: { duration: prefersReducedMotion ? 0 : 0.3, ease: 'easeOut' }
+                transition: { duration: prefersReducedMotion ? 0 : 0.3, ease: [0.4, 0, 0.2, 1] as any }
               }}
               className="mb-8 overflow-hidden"
             >
@@ -300,7 +300,7 @@ export const AdvancedPracticePicker: React.FC<AdvancedPracticePickerProps> = ({
             return (
               <motion.button
                 key={`category-${type.id}`}
-                ref={(el) => (cardRefs.current[index] = el)}
+                ref={(el) => { cardRefs.current[index] = el; }}
                 role="radio"
                 aria-checked={isSelected}
                 aria-label={`${type.label}: ${type.help}`}

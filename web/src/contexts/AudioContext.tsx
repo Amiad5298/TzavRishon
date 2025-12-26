@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface AudioContextType {
@@ -11,7 +13,7 @@ const AudioContext = createContext<AudioContextType | undefined>(undefined);
 
 export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [soundEnabled, setSoundEnabled] = useState(
-    () => localStorage.getItem('soundEnabled') !== 'false'
+    () => typeof window !== 'undefined' && localStorage.getItem('soundEnabled') !== 'false'
   );
 
   const correctAudio = typeof Audio !== 'undefined' ? new Audio('/sfx/correct.mp3') : null;
@@ -20,7 +22,9 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const toggleSound = () => {
     const newValue = !soundEnabled;
     setSoundEnabled(newValue);
-    localStorage.setItem('soundEnabled', String(newValue));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('soundEnabled', String(newValue));
+    }
   };
 
   const playCorrect = () => {
