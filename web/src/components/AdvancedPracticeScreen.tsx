@@ -471,7 +471,7 @@ export const AdvancedPracticeScreen: React.FC<Props> = ({
             return (
               <motion.button
                 key={`${question.id}-${choice.id}`}
-                ref={(el) => (choiceRefs.current[index] = el)}
+                ref={(el) => { choiceRefs.current[index] = el; }}
                 role="radio"
                 aria-checked={selectedChoice === choice.id}
                 aria-label={`תשובה ${choice.id}: ${choice.label || ''}`}
