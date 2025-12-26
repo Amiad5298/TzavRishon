@@ -1,0 +1,32 @@
+services:
+  # Web Frontend (Next.js)
+  - type: web
+    name: tzavrishon-web
+    runtime: node
+    region: frankfurt
+    plan: free
+    rootDir: web
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_VERSION
+        value: 22.16.0
+      - key: NEXT_PUBLIC_SITE_URL
+        value: https://tzavrishonplus.co.il
+      - key: NEXT_PUBLIC_API_URL
+        sync: false  # Set this in Render dashboard
+    healthCheckPath: /
+
+  # Backend API (if you have one)
+  # Uncomment and configure if needed
+  # - type: web
+  #   name: tzavrishon-api
+  #   runtime: docker
+  #   region: frankfurt
+  #   plan: free
+  #   rootDir: server
+  #   dockerfilePath: ./Dockerfile
+  #   envVars:
+  #     - key: DATABASE_URL
+  #       sync: false
+
