@@ -56,13 +56,13 @@ public class ProgressService {
     response.setTotalAttempts(attempts.size());
 
     // Calculate overall stats
-    List<ExamAnswer> allAnswers = new ArrayList<>();
+    List<ExamUserAnswer> allAnswers = new ArrayList<>();
     for (ExamAttempt attempt : attempts) {
       allAnswers.addAll(examAnswerRepository.findByAttemptIdOrderBySection(attempt.getId()));
     }
 
     if (!allAnswers.isEmpty()) {
-      long totalCorrect = allAnswers.stream().filter(ExamAnswer::getIsCorrect).count();
+      long totalCorrect = allAnswers.stream().filter(ExamUserAnswer::getIsCorrect).count();
       response.setOverallAccuracy((double) totalCorrect / allAnswers.size() * 100);
 
       int totalTime = allAnswers.stream().mapToInt(a -> a.getTimeMs() != null ? a.getTimeMs() : 0).sum();
@@ -76,21 +76,21 @@ public class ProgressService {
     response.setImprovementPercent(calculateImprovement(attempts));
 
     // Stats by type
-    Map<QuestionType, List<ExamAnswer>> byType = new HashMap<>();
+    Map<QuestionType, List<ExamUserAnswer>> byType = new HashMap<>();
     for (QuestionType type : QuestionType.values()) {
       byType.put(type, new ArrayList<>());
     }
-    for (ExamAnswer answer : allAnswers) {
+    for (ExamUserAnswer answer : allAnswers) {
       byType.get(answer.getQuestion().getType()).add(answer);
     }
 
     List<TypeStats> statsByType = new ArrayList<>();
-    for (Map.Entry<QuestionType, List<ExamAnswer>> entry : byType.entrySet()) {
+    for (Map.Entry<QuestionType, List<ExamUserAnswer>> entry : byType.entrySet()) {
       if (!entry.getValue().isEmpty()) {
         TypeStats stats = new TypeStats();
         stats.setType(entry.getKey().name());
         stats.setTotalQuestions(entry.getValue().size());
-        long correct = entry.getValue().stream().filter(ExamAnswer::getIsCorrect).count();
+        long correct = entry.getValue().stream().filter(ExamUserAnswer::getIsCorrect).count();
         stats.setCorrectAnswers((int) correct);
         stats.setAccuracy((double) correct / entry.getValue().size() * 100);
         statsByType.add(stats);
@@ -109,10 +109,10 @@ public class ProgressService {
                   summary.setCreatedAt(attempt.getCreatedAt().toString());
                   summary.setScore90(attempt.getTotalScore90());
 
-                  List<ExamAnswer> attemptAnswers =
+                  List<ExamUserAnswer> attemptAnswers =
                       examAnswerRepository.findByAttemptIdOrderBySection(attempt.getId());
                   long correct =
-                      attemptAnswers.stream().filter(ExamAnswer::getIsCorrect).count();
+                      attemptAnswers.stream().filter(ExamUserAnswer::getIsCorrect).count();
                   summary.setCorrectAnswers((int) correct);
                   summary.setTotalQuestions(attemptAnswers.size());
                   return summary;
@@ -135,23 +135,23 @@ public class ProgressService {
     List<TrendPoint> trends = new ArrayList<>();
 
     for (ExamAttempt attempt : attempts) {
-      List<ExamAnswer> answers =
+      List<ExamUserAnswer> answers =
           examAnswerRepository.findByAttemptIdOrderBySection(attempt.getId());
 
-      Map<QuestionType, List<ExamAnswer>> byType = new HashMap<>();
+      Map<QuestionType, List<ExamUserAnswer>> byType = new HashMap<>();
       for (QuestionType type : QuestionType.values()) {
         byType.put(type, new ArrayList<>());
       }
-      for (ExamAnswer answer : answers) {
+      for (ExamUserAnswer answer : answers) {
         byType.get(answer.getQuestion().getType()).add(answer);
       }
 
-      for (Map.Entry<QuestionType, List<ExamAnswer>> entry : byType.entrySet()) {
+      for (Map.Entry<QuestionType, List<ExamUserAnswer>> entry : byType.entrySet()) {
         if (!entry.getValue().isEmpty()) {
           TrendPoint point = new TrendPoint();
           point.setDate(attempt.getCreatedAt().toString());
           point.setType(entry.getKey().name());
-          long correct = entry.getValue().stream().filter(ExamAnswer::getIsCorrect).count();
+          long correct = entry.getValue().stream().filter(ExamUserAnswer::getIsCorrect).count();
           point.setAccuracy((double) correct / entry.getValue().size() * 100);
           trends.add(point);
         }
@@ -183,8 +183,8 @@ public class ProgressService {
     ExamSummaryResponse response = new ExamSummaryResponse();
     response.setTotalScore90(attempt.getTotalScore90());
 
-    List<ExamAnswer> allAnswers = examAnswerRepository.findByAttemptIdOrderBySection(attempt.getId());
-    long totalCorrect = allAnswers.stream().filter(ExamAnswer::getIsCorrect).count();
+    List<ExamUserAnswer> allAnswers = examAnswerRepository.findByAttemptIdOrderBySection(attempt.getId());
+    long totalCorrect = allAnswers.stream().filter(ExamUserAnswer::getIsCorrect).count();
     response.setTotalQuestions(allAnswers.size());
     response.setCorrectAnswers((int) totalCorrect);
 
@@ -202,10 +202,10 @@ public class ProgressService {
 
     // Build section scores
     for (ExamSection section : sections) {
-      List<ExamAnswer> sectionAnswers = allAnswers.stream()
+      List<ExamUserAnswer> sectionAnswers = allAnswers.stream()
           .filter(a -> a.getQuestion().getType() == section.getType())
           .collect(Collectors.toList());
-      long sectionCorrect = sectionAnswers.stream().filter(ExamAnswer::getIsCorrect).count();
+      long sectionCorrect = sectionAnswers.stream().filter(ExamUserAnswer::getIsCorrect).count();
 
       SectionScore score = new SectionScore();
       score.setCorrect((int) sectionCorrect);
@@ -286,7 +286,7 @@ public class ProgressService {
     PracticeStatsResponse response = new PracticeStatsResponse();
     
     // Get all practice answers
-    List<PracticeAnswer> allAnswers = new ArrayList<>();
+    List<PracticeUserAnswer> allAnswers = new ArrayList<>();
     for (PracticeSession session : sessions) {
       allAnswers.addAll(practiceAnswerRepository.findBySession_IdOrderByAnsweredAt(session.getId()));
     }
@@ -302,7 +302,7 @@ public class ProgressService {
     }
 
     // Calculate overall stats
-    long totalCorrect = allAnswers.stream().filter(PracticeAnswer::getIsCorrect).count();
+    long totalCorrect = allAnswers.stream().filter(PracticeUserAnswer::getIsCorrect).count();
     response.setTotalQuestions(allAnswers.size());
     response.setOverallAccuracy((double) totalCorrect / allAnswers.size() * 100);
     
@@ -313,23 +313,23 @@ public class ProgressService {
     response.setAvgTimePerQuestionMs(avgTime);
 
     // Stats by type
-    Map<QuestionType, List<PracticeAnswer>> byType = new HashMap<>();
+    Map<QuestionType, List<PracticeUserAnswer>> byType = new HashMap<>();
     for (QuestionType type : QuestionType.values()) {
       byType.put(type, new ArrayList<>());
     }
-    for (PracticeAnswer answer : allAnswers) {
+    for (PracticeUserAnswer answer : allAnswers) {
       if (answer.getQuestion() != null) {
         byType.get(answer.getQuestion().getType()).add(answer);
       }
     }
 
     Map<String, TypePracticeStats> statsByType = new HashMap<>();
-    for (Map.Entry<QuestionType, List<PracticeAnswer>> entry : byType.entrySet()) {
+    for (Map.Entry<QuestionType, List<PracticeUserAnswer>> entry : byType.entrySet()) {
       if (!entry.getValue().isEmpty()) {
         TypePracticeStats stats = new TypePracticeStats();
         stats.setType(entry.getKey().name());
         stats.setTotalQuestions(entry.getValue().size());
-        long correct = entry.getValue().stream().filter(PracticeAnswer::getIsCorrect).count();
+        long correct = entry.getValue().stream().filter(PracticeUserAnswer::getIsCorrect).count();
         stats.setCorrectAnswers((int) correct);
         stats.setAccuracy((double) correct / entry.getValue().size() * 100);
         
@@ -349,7 +349,7 @@ public class ProgressService {
     response.setStatsByType(statsByType);
 
     // Daily volume
-    Map<LocalDate, List<PracticeAnswer>> byDate = allAnswers.stream()
+    Map<LocalDate, List<PracticeUserAnswer>> byDate = allAnswers.stream()
         .collect(Collectors.groupingBy(a -> 
             LocalDateTime.ofInstant(a.getAnsweredAt(), ZoneId.systemDefault()).toLocalDate()));
     
@@ -358,7 +358,7 @@ public class ProgressService {
           DailyPracticeVolume vol = new DailyPracticeVolume();
           vol.setDate(entry.getKey());
           vol.setQuestionCount(entry.getValue().size());
-          long dayCorrect = entry.getValue().stream().filter(PracticeAnswer::getIsCorrect).count();
+          long dayCorrect = entry.getValue().stream().filter(PracticeUserAnswer::getIsCorrect).count();
           vol.setAccuracy((double) dayCorrect / entry.getValue().size() * 100);
           return vol;
         })
@@ -394,26 +394,26 @@ public class ProgressService {
     List<TrendPoint> trends = new ArrayList<>();
 
     for (PracticeSession session : sessions) {
-      List<PracticeAnswer> answers = practiceAnswerRepository.findBySession_IdOrderByAnsweredAt(session.getId());
+      List<PracticeUserAnswer> answers = practiceAnswerRepository.findBySession_IdOrderByAnsweredAt(session.getId());
       
       if (!answers.isEmpty()) {
         // Group by type
-        Map<QuestionType, List<PracticeAnswer>> byType = new HashMap<>();
+        Map<QuestionType, List<PracticeUserAnswer>> byType = new HashMap<>();
         for (QuestionType type : QuestionType.values()) {
           byType.put(type, new ArrayList<>());
         }
-        for (PracticeAnswer answer : answers) {
+        for (PracticeUserAnswer answer : answers) {
           if (answer.getQuestion() != null) {
             byType.get(answer.getQuestion().getType()).add(answer);
           }
         }
 
-        for (Map.Entry<QuestionType, List<PracticeAnswer>> entry : byType.entrySet()) {
+        for (Map.Entry<QuestionType, List<PracticeUserAnswer>> entry : byType.entrySet()) {
           if (!entry.getValue().isEmpty()) {
             TrendPoint point = new TrendPoint();
             point.setDate(session.getStartedAt().toString());
             point.setType(entry.getKey().name());
-            long correct = entry.getValue().stream().filter(PracticeAnswer::getIsCorrect).count();
+            long correct = entry.getValue().stream().filter(PracticeUserAnswer::getIsCorrect).count();
             point.setAccuracy((double) correct / entry.getValue().size() * 100);
             trends.add(point);
           }
@@ -441,9 +441,9 @@ public class ProgressService {
           item.setCreatedAt(LocalDateTime.ofInstant(attempt.getCreatedAt(), ZoneId.systemDefault()));
           item.setScore90(attempt.getTotalScore90());
           
-          List<ExamAnswer> answers = examAnswerRepository.findByAttemptIdOrderBySection(attempt.getId());
+          List<ExamUserAnswer> answers = examAnswerRepository.findByAttemptIdOrderBySection(attempt.getId());
           if (!answers.isEmpty()) {
-            long correct = answers.stream().filter(ExamAnswer::getIsCorrect).count();
+            long correct = answers.stream().filter(ExamUserAnswer::getIsCorrect).count();
             item.setAccuracy((double) correct / answers.size() * 100);
           } else {
             item.setAccuracy(0.0);
@@ -459,10 +459,10 @@ public class ProgressService {
           
           // Section breakdown
           Map<String, SectionBreakdown> sections = new HashMap<>();
-          Map<QuestionType, List<ExamAnswer>> byType = answers.stream()
+          Map<QuestionType, List<ExamUserAnswer>> byType = answers.stream()
               .collect(Collectors.groupingBy(a -> a.getQuestion().getType()));
           
-          for (Map.Entry<QuestionType, List<ExamAnswer>> entry : byType.entrySet()) {
+          for (Map.Entry<QuestionType, List<ExamUserAnswer>> entry : byType.entrySet()) {
             SectionBreakdown breakdown = new SectionBreakdown();
             breakdown.setTotal(entry.getValue().size());
             breakdown.setAnswered((int) entry.getValue().stream()
@@ -471,7 +471,7 @@ public class ProgressService {
             breakdown.setSkipped(breakdown.getTotal() - breakdown.getAnswered());
             breakdown.setFlagged(0); // TODO: implement flagging
             
-            long sectionCorrect = entry.getValue().stream().filter(ExamAnswer::getIsCorrect).count();
+            long sectionCorrect = entry.getValue().stream().filter(ExamUserAnswer::getIsCorrect).count();
             breakdown.setAccuracy((double) sectionCorrect / entry.getValue().size() * 100);
             
             long timeSpent = entry.getValue().stream()
@@ -499,7 +499,7 @@ public class ProgressService {
 
     Instant now = Instant.now();
     Instant mostRecent = answers.stream()
-        .map(PracticeAnswer::getAnsweredAt)
+        .map(PracticeUserAnswer::getAnsweredAt)
         .max(Comparator.naturalOrder())
         .orElse(now);
     

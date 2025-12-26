@@ -130,7 +130,7 @@ public class ExamService {
   }
 
   @Transactional
-  public AnswerResponse submitExamAnswer(UUID attemptId, SubmitAnswerRequest request) {
+  public AnswerResponse submitExamUserAnswer(UUID attemptId, SubmitAnswerRequest request) {
     Optional<ExamSection> currentSectionOpt =
         sectionRepository.findFirstByAttemptIdAndLockedFalseOrderByOrderIndexAsc(attemptId);
 
@@ -287,8 +287,8 @@ public class ExamService {
     ExamSummaryResponse response = new ExamSummaryResponse();
     response.setTotalScore90(attempt.getTotalScore90());
 
-    List<ExamAnswer> allAnswers = answerRepository.findByAttemptIdOrderBySection(attempt.getId());
-    long totalCorrect = allAnswers.stream().filter(ExamAnswer::getIsCorrect).count();
+    List<ExamUserAnswer> allAnswers = answerRepository.findByAttemptIdOrderBySection(attempt.getId());
+    long totalCorrect = allAnswers.stream().filter(ExamUserAnswer::getIsCorrect).count();
     response.setTotalQuestions(allAnswers.size());
     response.setCorrectAnswers((int) totalCorrect);
 
