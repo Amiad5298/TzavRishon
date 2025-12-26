@@ -17,17 +17,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ProgressService {
   private final ExamAttemptRepository attemptRepository;
-  private final ExamAnswerRepository examAnswerRepository;
+  private final ExamUserAnswerRepository examAnswerRepository;
   private final ExamSectionRepository sectionRepository;
   private final PracticeSessionRepository sessionRepository;
-  private final PracticeAnswerRepository practiceAnswerRepository;
+  private final PracticeUserAnswerRepository practiceAnswerRepository;
 
   public ProgressService(
       ExamAttemptRepository attemptRepository,
-      ExamAnswerRepository examAnswerRepository,
+      ExamUserAnswerRepository examAnswerRepository,
       ExamSectionRepository sectionRepository,
       PracticeSessionRepository sessionRepository,
-      PracticeAnswerRepository practiceAnswerRepository) {
+      PracticeUserAnswerRepository practiceAnswerRepository) {
     this.attemptRepository = attemptRepository;
     this.examAnswerRepository = examAnswerRepository;
     this.sectionRepository = sectionRepository;
@@ -492,11 +492,11 @@ public class ProgressService {
     return response;
   }
 
-  private double calculateRecencyWeight(List<PracticeAnswer> answers) {
+  private double calculateRecencyWeight(List<PracticeUserAnswer> answers) {
     if (answers.isEmpty()) {
       return 1.0;
     }
-    
+
     Instant now = Instant.now();
     Instant mostRecent = answers.stream()
         .map(PracticeAnswer::getAnsweredAt)

@@ -45,31 +45,20 @@ export async function GET(
       [id]
     );
 
-    // Get acceptable answers
-    const acceptableAnswers = await query<{
-      id: string;
-      value: string;
-      numeric_tolerance: number | null;
-    }>(
-      `SELECT id, value, numeric_tolerance
-       FROM acceptable_answers WHERE question_id = $1`,
-      [id]
-    );
-
     // Get usage stats
     const stats = await queryOne<{
       times_served: string;
       times_correct: string;
       avg_time_ms: string;
     }>(
-      `SELECT 
+      `SELECT
         COUNT(*) as times_served,
         SUM(CASE WHEN is_correct THEN 1 ELSE 0 END) as times_correct,
         AVG(time_ms) as avg_time_ms
       FROM (
-        SELECT is_correct, time_ms FROM practice_answers WHERE question_id = $1
+        SELECT is_correct, time_ms FROM practice_user_answers WHERE question_id = $1
         UNION ALL
-        SELECT is_correct, time_ms FROM exam_answers WHERE question_id = $1
+        SELECT is_correct, time_ms FROM exam_user_answers WHERE question_id = $1
       ) all_answers`,
       [id]
     );
@@ -77,12 +66,11 @@ export async function GET(
     return NextResponse.json({
       question,
       options,
-      acceptableAnswers,
       stats: stats ? {
         timesServed: parseInt(stats.times_served),
         timesCorrect: parseInt(stats.times_correct || '0'),
         avgTimeMs: parseFloat(stats.avg_time_ms || '0'),
-        accuracy: parseInt(stats.times_served) > 0 
+        accuracy: parseInt(stats.times_served) > 0
           ? (parseInt(stats.times_correct || '0') / parseInt(stats.times_served) * 100).toFixed(1)
           : null,
       } : null,

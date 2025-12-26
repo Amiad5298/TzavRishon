@@ -35,6 +35,6 @@ public class PracticeSession {
   private Instant endedAt;
 
   @OneToMany(mappedBy = "session", cascade = CascadeType.ALL)
-  private List<PracticeAnswer> answers;
+  private List<PracticeUserAnswer> answers;
 }
 

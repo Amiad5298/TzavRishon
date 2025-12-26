@@ -20,7 +20,7 @@ public class ExamService {
 
   private final ExamAttemptRepository attemptRepository;
   private final ExamSectionRepository sectionRepository;
-  private final ExamAnswerRepository answerRepository;
+  private final ExamUserAnswerRepository answerRepository;
   private final QuestionRepository questionRepository;
   private final QuestionOptionRepository optionRepository;
   private final UserRepository userRepository;
@@ -29,7 +29,7 @@ public class ExamService {
   public ExamService(
       ExamAttemptRepository attemptRepository,
       ExamSectionRepository sectionRepository,
-      ExamAnswerRepository answerRepository,
+      ExamUserAnswerRepository answerRepository,
       QuestionRepository questionRepository,
       QuestionOptionRepository optionRepository,
       UserRepository userRepository,
@@ -151,7 +151,7 @@ public class ExamService {
     }
 
     // Check if already answered
-    List<ExamAnswer> existingAnswers = answerRepository.findBySectionIdOrderByOrderIndex(section.getId());
+    List<ExamUserAnswer> existingAnswers = answerRepository.findBySectionIdOrderByOrderIndex(section.getId());
     boolean alreadyAnswered =
         existingAnswers.stream()
             .anyMatch(a -> a.getQuestion().getId().equals(request.getQuestionId()));
@@ -163,7 +163,7 @@ public class ExamService {
     boolean isCorrect = validateAnswer(question, request);
 
     // Save answer
-    ExamAnswer answer = new ExamAnswer();
+    ExamUserAnswer answer = new ExamUserAnswer();
     answer.setSection(section);
     answer.setQuestion(question);
     answer.setUserAnswerRaw(request.getTextAnswer());
@@ -194,8 +194,8 @@ public class ExamService {
     section.setEndedAt(Instant.now());
 
     // Calculate section score
-    List<ExamAnswer> answers = answerRepository.findBySectionIdOrderByOrderIndex(section.getId());
-    long correctCount = answers.stream().filter(ExamAnswer::getIsCorrect).count();
+    List<ExamUserAnswer> answers = answerRepository.findBySectionIdOrderByOrderIndex(section.getId());
+    long correctCount = answers.stream().filter(ExamUserAnswer::getIsCorrect).count();
     section.setScoreSection((int) correctCount);
     sectionRepository.save(section);
 
@@ -220,16 +220,16 @@ public class ExamService {
       if (!section.getLocked()) {
         section.setLocked(true);
         section.setEndedAt(Instant.now());
-        List<ExamAnswer> answers = answerRepository.findBySectionIdOrderByOrderIndex(section.getId());
-        long correctCount = answers.stream().filter(ExamAnswer::getIsCorrect).count();
+        List<ExamUserAnswer> answers = answerRepository.findBySectionIdOrderByOrderIndex(section.getId());
+        long correctCount = answers.stream().filter(ExamUserAnswer::getIsCorrect).count();
         section.setScoreSection((int) correctCount);
         sectionRepository.save(section);
       }
     }
 
     // Calculate total score out of 90
-    List<ExamAnswer> allAnswers = answerRepository.findByAttemptIdOrderBySection(attemptId);
-    long totalCorrect = allAnswers.stream().filter(ExamAnswer::getIsCorrect).count();
+    List<ExamUserAnswer> allAnswers = answerRepository.findByAttemptIdOrderBySection(attemptId);
+    long totalCorrect = allAnswers.stream().filter(ExamUserAnswer::getIsCorrect).count();
     int totalQuestions = allAnswers.size();
     int score90 = totalQuestions > 0 ? (int) Math.round(90.0 * totalCorrect / totalQuestions) : 0;
 
@@ -276,7 +276,7 @@ public class ExamService {
         questions.stream().map(this::mapToQuestionResponse).collect(Collectors.toList()));
 
     // Get answered question IDs
-    List<ExamAnswer> answers = answerRepository.findBySectionIdOrderByOrderIndex(section.getId());
+    List<ExamUserAnswer> answers = answerRepository.findBySectionIdOrderByOrderIndex(section.getId());
     response.setAnsweredQuestionIds(
         answers.stream().map(a -> a.getQuestion().getId()).collect(Collectors.toList()));
 
@@ -302,9 +302,9 @@ public class ExamService {
     }
 
     for (ExamSection section : sections) {
-      List<ExamAnswer> sectionAnswers =
+      List<ExamUserAnswer> sectionAnswers =
           answerRepository.findBySectionIdOrderByOrderIndex(section.getId());
-      long sectionCorrect = sectionAnswers.stream().filter(ExamAnswer::getIsCorrect).count();
+      long sectionCorrect = sectionAnswers.stream().filter(ExamUserAnswer::getIsCorrect).count();
 
       SectionScore score = new SectionScore();
       score.setCorrect((int) sectionCorrect);
