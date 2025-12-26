@@ -434,7 +434,7 @@ const NewHome: React.FC = () => {
                       transition={{
                         duration: 2.5,
                         repeat: Infinity,
-                        ease: 'easeInOut',
+                        ease: [0.4, 0, 0.6, 1] as any,
                       }}
                       className="absolute top-4 left-4 w-11 h-11 bg-white/5 backdrop-blur-lg rounded-xl flex items-center justify-center z-20 border border-white/20 shadow-lg"
                     >

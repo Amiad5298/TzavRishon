@@ -77,7 +77,7 @@ const Layout: React.FC = () => {
       <motion.header
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        transition={{ duration: 0.4, ease: 'easeOut' }}
+        transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] as any }}
         className={`sticky top-0 z-50 transition-all duration-300 ${
           scrolled 
             ? 'bg-background-deep/80 backdrop-blur-xl shadow-lg shadow-black/20 border-b border-white/5' 
