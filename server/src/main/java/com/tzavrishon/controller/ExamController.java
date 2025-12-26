@@ -33,7 +33,7 @@ public class ExamController {
   @PostMapping("/{attemptId}/answer")
   public ResponseEntity<AnswerResponse> submitAnswer(
       @PathVariable UUID attemptId, @Valid @RequestBody SubmitAnswerRequest request) {
-    AnswerResponse response = examService.submitExamAnswer(attemptId, request);
+    AnswerResponse response = examService.submitExamUserAnswer(attemptId, request);
     return ResponseEntity.ok(response);
   }
 
