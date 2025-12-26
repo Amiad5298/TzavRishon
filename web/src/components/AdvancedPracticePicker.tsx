@@ -300,7 +300,7 @@ export const AdvancedPracticePicker: React.FC<AdvancedPracticePickerProps> = ({
             return (
               <motion.button
                 key={`category-${type.id}`}
-                ref={(el) => (cardRefs.current[index] = el)}
+                ref={(el) => { cardRefs.current[index] = el; }}
                 role="radio"
                 aria-checked={isSelected}
                 aria-label={`${type.label}: ${type.help}`}
